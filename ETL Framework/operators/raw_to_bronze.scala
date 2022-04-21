@@ -9,7 +9,7 @@ dbutils.widgets.text("bronzeContainer", "")
 
 // COMMAND ----------
 
-// MAGIC %run "/ETL Framework/utils/classes-methods-init"
+// MAGIC %run "../utils/classes-methods-init"
 
 // COMMAND ----------
 
