@@ -71,7 +71,7 @@ if not any(mount.mountPoint == mountPoint for mount in dbutils.fs.mounts()):
 
 # COMMAND ----------
 
-dbutils.fs.unmount("/mnt/bronze")
+dbutils.fs.unmount("/mnt/raw")
 
 # COMMAND ----------
 

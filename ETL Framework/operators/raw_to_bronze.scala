@@ -13,21 +13,6 @@ dbutils.widgets.text("bronzeContainer", "")
 
 // COMMAND ----------
 
-def createBronzeTable(rawFilePath: String, bronzeFilePath: String, fileName: String, fileType: String, tableName: String, rawContainer: String, bronzeContainer: String) = {
-    val bronzeFullFilePath = f"/mnt/$bronzeContainer/$bronzeFilePath/$fileName.$fileType"
-    val rawFullFilePath = f"/mnt/$rawContainer/$rawFilePath/$fileName.$fileType"
-    println(f"Loading data from $rawFullFilePath")    
-    val df = spark.read.parquet(rawFullFilePath)
-    
-    println(f"Saving data to $bronzeFullFilePath")
-    df.write.format("delta").mode("overwrite").save(bronzeFullFilePath)
-  
-    // Create the table.
-    spark.sql(f"CREATE TABLE IF NOT EXISTS bronze.$tableName USING DELTA LOCATION '$bronzeFullFilePath'")
-}
-
-// COMMAND ----------
-
 val rawFilePath = dbutils.widgets.get("rawFilePath")
 val bronzeFilePath = dbutils.widgets.get("bronzeFilePath")
 val fileName = dbutils.widgets.get("fileName")
