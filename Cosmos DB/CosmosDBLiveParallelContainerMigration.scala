@@ -59,7 +59,7 @@ def parallelNotebook(notebook: NotebookData): Future[String] = {
 
 // COMMAND ----------
 
-val rawFullFilePath = "dbfs:/FileStore/cosmosDBLiveMigrationList.csv"  
+val rawFullFilePath = "dbfs:/FileStore/cosmosDBLiveMigrationList.csv"
 val df = spark.read.option("header", true).csv(rawFullFilePath)
 
 val schemaList = df.schema.map(_.name).zipWithIndex//get schema list from dataframe
