@@ -1,7 +1,7 @@
 // Databricks notebook source
 // global config
-dbutils.widgets.text("cosmosEndpoint", "https://cosmosdbtestmigration.documents.azure.com:443/") // enter the Cosmos DB Account URI of the source account
-dbutils.widgets.text("cosmosMasterKey", "uWpEvOZ9eLZXZXJ0idOixmPE29MMZuz237cHDj6uY4CoPz91SPkDWg5OoJWuAdqZ3Z2PAVPunepIACDbXTsfgg==") // enter the Cosmos DB Account PRIMARY KEY of the source account
+dbutils.widgets.text("cosmosEndpoint", "") // enter the Cosmos DB Account URI of the source account
+dbutils.widgets.text("cosmosMasterKey", "") // enter the Cosmos DB Account PRIMARY KEY of the source account
 dbutils.widgets.text("cosmosRegion", "West US") // enter the Cosmos DB Region
 
 // source config
