@@ -6,18 +6,19 @@ dbutils.widgets.removeAll()
 // global config
 dbutils.widgets.text("cosmosEndpoint", "") // enter the Cosmos DB Account URI of the source account
 dbutils.widgets.text("cosmosMasterKey", "") // enter the Cosmos DB Account PRIMARY KEY of the source account
-dbutils.widgets.text("cosmosRegion", "West US") // enter the Cosmos DB Region
+
+dbutils.widgets.text("cosmosRegion", "") // enter the Cosmos DB Region
 
 // source config
-dbutils.widgets.text("cosmosSourceDatabaseName", "SampleDB") // enter the name of your source database
-dbutils.widgets.text("cosmosSourceContainerName", "SampleContainer") // enter the name of the container you want to migrate
-dbutils.widgets.text("cosmosSourceContainerThroughputControl", "0.95") // targetThroughputThreshold defines target percentage of available throughput you want the migration to use
+dbutils.widgets.text("cosmosSourceDatabaseName", "") // enter the name of your source database
+dbutils.widgets.text("cosmosSourceContainerName", "") // enter the name of the container you want to migrate
+dbutils.widgets.text("cosmosSourceContainerThroughputControl", "") // targetThroughputThreshold defines target percentage of available throughput you want the migration to use
 
 // target config
-dbutils.widgets.text("cosmosTargetDatabaseName", "SampleDBNew") // enter the name of your target database
-dbutils.widgets.text("cosmosTargetContainerName", "SampleContainer") // enter the name of the target container
-dbutils.widgets.text("cosmosTargetContainerPartitionKey", "/address") // enter the partition key for how data is stored in the target container
-dbutils.widgets.text("cosmosTargetContainerProvisionedThroughput", "sharedDBautoScaleMaxThroughput = '1000'") // enter the partition key for how data is stored in the target container
+dbutils.widgets.text("cosmosTargetDatabaseName", "") // enter the name of your target database
+dbutils.widgets.text("cosmosTargetContainerName", "") // enter the name of the target container
+dbutils.widgets.text("cosmosTargetContainerPartitionKey", "") // enter the partition key for how data is stored in the target container
+dbutils.widgets.text("cosmosTargetContainerProvisionedThroughput", "") // enter the partition key for how data is stored in the target container
 
 // COMMAND ----------
 
@@ -49,7 +50,7 @@ def returnCosmosDBProperties(cosmosContainerProvisionedThroughput: String): Stri
 }
 
 def returnCosmosContainerProperties(cosmosContainerProvisionedThroughput: String): String = {
-  if(!(cosmosTargetContainerProvisionedThroughput contains "shared")) { return "%,".format(cosmosTargetContainerProvisionedThroughput) } else return ""
+  if(!(cosmosTargetContainerProvisionedThroughput contains "shared")) { return "%s,".format(cosmosTargetContainerProvisionedThroughput) } else return ""
 }
 
 def createCosmosDB(cosmosDatabaseName: String, cosmosContainerProvisionedThroughput: String){
@@ -114,8 +115,9 @@ def cosmosInitReadStream(cosmosEndpoint: String, cosmosMasterKey: String, cosmos
                              "spark.cosmos.applicationName" -> s"${cosmosDatabaseName}_${cosmosContainerName}_LiveMigrationRead_",   
                              "spark.cosmos.database" -> cosmosDatabaseName,
                              "spark.cosmos.container" -> cosmosContainerName,
-                             "spark.cosmos.read.partitioning.strategy" -> "Default",
-                             "spark.cosmos.read.inferSchema.enabled" -> "false",   
+                             "spark.cosmos.read.partitioning.strategy" -> "Restrictive",
+                             "spark.cosmos.read.inferSchema.enabled" -> "false",
+                             "spark.cosmos.read.maxItemCount" -> "5",
                              "spark.cosmos.changeFeed.startFrom" -> "Beginning",
                              "spark.cosmos.changeFeed.mode" -> "Incremental",
                              "spark.cosmos.changeFeed.itemCountPerTriggerHint" -> "50000", 
@@ -138,7 +140,7 @@ def cosmosInitReadStream(cosmosEndpoint: String, cosmosMasterKey: String, cosmos
 def cosmosInitWriteConfig(cosmosEndpoint: String, cosmosMasterKey: String, cosmosSourceDatabaseName: String, cosmosSourceContainerName: String, cosmosTargetDatabaseName: String, cosmosTargetContainerName: String): Map[String, String] = {   
     // when running this notebook is stopped (or if a problem causes a crash) change feed processing will be picked up from last processed document
     // if you want to start from beginning, delete this folder or change checkpointLocation value
-    val checkpointLocation = s"/tmp/${cosmosSourceDatabaseName}/${cosmosSourceContainerName}/live_migration_checkpoint"
+    val checkpointLocation = s"/tmp/live_migration_checkpoint/${cosmosSourceDatabaseName}/${cosmosSourceContainerName}"
     val applicationName = s"${cosmosSourceDatabaseName}_${cosmosSourceContainerName}_"
 
     return Map(

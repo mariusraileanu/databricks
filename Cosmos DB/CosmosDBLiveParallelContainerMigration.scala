@@ -76,7 +76,7 @@ val notebookToRun = "CosmosDBLiveContainerMigration"
 
 val notebooks = jobArguments.map { case (args) => NotebookData(notebookToRun, 0, args) }.toSeq
 
-val numNotebooksInParallel = 4
+val numNotebooksInParallel = 2
 val res = parallelNotebooks(notebooks, numNotebooksInParallel)
 
 Await.result(res, 30 seconds) // this is a blocking call.
