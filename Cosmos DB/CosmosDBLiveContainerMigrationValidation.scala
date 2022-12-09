@@ -2,6 +2,7 @@
 // global config
 dbutils.widgets.text("cosmosEndpoint", "") // enter the Cosmos DB Account URI of the source account
 dbutils.widgets.text("cosmosMasterKey", "") // enter the Cosmos DB Account PRIMARY KEY of the source account
+
 dbutils.widgets.text("cosmosRegion", "") // enter the Cosmos DB Region
 
 // source config
